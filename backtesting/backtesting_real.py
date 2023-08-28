@@ -12,8 +12,8 @@ import psycopg2.extras as extras
 #
 import os
 # cargamos dotenv
-from dotenv import load_dotenv
-load_dotenv()
+#from dotenv import load_dotenv
+#load_dotenv()
 # hace 5 anhos 
 five_years_ago = datetime.now() - timedelta(days=5*365)
 #

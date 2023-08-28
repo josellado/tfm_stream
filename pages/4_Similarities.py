@@ -11,8 +11,8 @@ import networkx as nx
 
 import os
 # cargamos dotenv
-from dotenv import load_dotenv
-load_dotenv()
+#from dotenv import load_dotenv
+#load_dotenv()
 
 # 1 Consultamos la bbdd para extraer los embeddings 
 

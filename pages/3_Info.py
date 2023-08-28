@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
 # cargamos dotenv
-from dotenv import load_dotenv
-load_dotenv()
+#from dotenv import load_dotenv
+#load_dotenv()
 
 # cargamos las funciones 
 from fundamanetals.finan_model_prep import load_data_fin_model_prep,get_price_data_fig

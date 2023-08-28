@@ -14,8 +14,8 @@ from backtesting.utils_backtesting import modelo, backtesting
 
 import os
 # cargamos dotenv
-from dotenv import load_dotenv
-load_dotenv()
+#from dotenv import load_dotenv
+#load_dotenv()
 
 # el streamlit 
 with open('styles/style_info.css') as f:
