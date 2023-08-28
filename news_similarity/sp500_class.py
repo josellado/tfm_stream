@@ -1,3 +1,5 @@
+"""
+
 import concurrent.futures
 import requests
 from bs4 import BeautifulSoup
@@ -9,7 +11,7 @@ import nltk
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
+#from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 
 def get_wikipedia_text(page_title, language='en'):
@@ -65,7 +67,7 @@ for page_title in tqdm(page_titles):
 
 nltk.download('punkt')
 model_name='all-mpnet-base-v2'
-model = SentenceTransformer(model_name)
+#model = SentenceTransformer(model_name)
 
 def get_article_embedding(text, model ,model_name='all-mpnet-base-v2'):
     #model = SentenceTransformer(model_name) # meter fuera
@@ -177,3 +179,4 @@ plt.show()
 
 # --------------------
 
+"""
