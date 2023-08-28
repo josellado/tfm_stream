@@ -9,7 +9,7 @@ from dateutil.relativedelta import relativedelta
 from scipy import stats
 import psycopg2
 import psycopg2.extras as extras
-
+#
 import os
 # cargamos dotenv
 from dotenv import load_dotenv
