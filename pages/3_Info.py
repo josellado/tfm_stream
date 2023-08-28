@@ -26,7 +26,7 @@ from fundamanetals.tablas_fa import get_balance_sheet,\
 # las Api keys del proyecto 
 # import api key for stock data
 FA_API_KEY = os.getenv("financial_model_key")
-
+print(FA_API_KEY)
 
 st.set_page_config(page_title="Analisis Fundamental", layout="wide")
 
