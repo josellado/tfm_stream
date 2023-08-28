@@ -1,7 +1,6 @@
 altair==5.0.1
 appdirs==1.4.4
 attrs==23.1.0
-beautifulsoup4==4.12.2
 blinker==1.6.2
 cachetools==5.3.1
 certifi==2023.5.7
@@ -36,14 +35,13 @@ mdurl==0.1.2
 mpmath==1.3.0
 multitasking==0.0.11
 networkx==3.1
-nltk==3.8.1
 numpy==1.24.3
 packaging==23.1
 pandas==2.0.2
 Pillow==9.5.0
 plotly==5.15.0
 protobuf==4.23.2
-psycopg2==2.9.7
+psycopg2-binary==2.9.7
 pyarrow==12.0.1
 pycparser==2.21
 pydeck==0.8.1b0
@@ -57,13 +55,11 @@ pytz==2023.3
 pytz-deprecation-shim==0.1.0.post0
 PyYAML==6.0
 regex==2023.6.3
-requests==2.31.0
 rich==13.4.2
 safetensors==0.3.1
 scikit-learn==1.2.2
 scipy==1.10.1
 seaborn==0.12.2
-sentence-transformers==2.2.2
 sentencepiece==0.1.99
 six==1.16.0
 smmap==5.0.0
@@ -88,6 +84,5 @@ validators==0.20.0
 valinvest==0.0.2
 watchdog==3.0.0
 webencodings==0.5.1
-Wikipedia-API==0.5.8
 yfinance==0.2.20
 zipp==3.15.0

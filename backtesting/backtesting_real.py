@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 # hace 5 anhos 
 five_years_ago = datetime.now() - timedelta(days=5*365)
-
+#
 # Conexion con credenciales a la BBDD
 conn = psycopg2.connect(
                 host=os.getenv("HOST_TFM") ,
