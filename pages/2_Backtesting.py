@@ -128,11 +128,11 @@ if st.checkbox(':heavy_plus_sign:'):
             
         first_c_dos, second_c_dos, third_c_dos =st.columns(3)
 
-        first_c_dos.metric("N de Muestras int ", round(response_backtest[0],2))
-        second_c_dos.metric("ROE int", round(response_backtest[1],2))
-        third_c_dos.metric("PE Ratio int",round(response_backtest[2],2))
+        first_c_dos.metric("N de Muestras", round(response_backtest[0],2))
+        second_c_dos.metric("% de aciertos al SP500", round(response_backtest[1],2))
+        third_c_dos.metric("% de acierto a un fondo",round(response_backtest[2],2))
 
         # second row 
-        first_c_dos.metric("% aciertos cartera aleatoria int", round(response_backtest[3],2))
-        second_c_dos.metric("% alpha positivo int", round(response_backtest[4],2))
-        third_c_dos.metric("media de alpha int",round(response_backtest[5],2))
+        first_c_dos.metric("% aciertos cartera aleatoria", round(response_backtest[3],2))
+        second_c_dos.metric("% alpha positivo", round(response_backtest[4],2))
+        third_c_dos.metric("media de alpha",round(response_backtest[5],2))
