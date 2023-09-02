@@ -130,6 +130,8 @@ def get_balance_sheet(ticker, FA_API_KEY):
         df_fa = fa.balance_sheet_statement(
                     ticker, FA_API_KEY
                 )
+        if len(df_fa) == 0:
+            return pd.DataFrame()
     except: 
         print("no tenemoos los datos")
         return pd.DataFrame()
@@ -156,6 +158,8 @@ def get_inconme_statement(ticker, FA_API_KEY):
         df_fa = fa.income_statement(
                     ticker, FA_API_KEY
                 )
+        if len(df_fa) == 0:
+            return pd.DataFrame()
     except: 
         print("no tenemoos los datos")
         return pd.DataFrame()
@@ -190,7 +194,10 @@ def get_cash_flow_statement(ticker, FA_API_KEY):
         df_fa = fa.cash_flow_statement(
                     ticker, FA_API_KEY
                 )
+        if len(df_fa) == 0:
+            return pd.DataFrame()
     except: 
+
         print("no tenemoos los datos")
         return pd.DataFrame()
 

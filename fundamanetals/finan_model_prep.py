@@ -50,6 +50,11 @@ def load_data_fin_model_prep(ticker):
     except:
         dividends = pd.Series(0, name="Dividends")
 
+    try:
+        info_emrpesa = profile.iloc[:, 0]
+    except:
+        info_emrpesa = "Data No Available"
+
     # return information of interest
     return {
         "stock_closings": stock_data["close"].sort_index(),
@@ -61,7 +66,7 @@ def load_data_fin_model_prep(ticker):
         #"free_cash_flow_per_share": key_metrics_annually.loc["freeCashFlowPerShare"].sort_index(),
         "dividends": dividends,
        # "earnings_per_share": income_statement_annually.loc["eps"].sort_index(),
-        "info": profile.iloc[:, 0],
+        "info": info_emrpesa,
         "key_metrics_annually":key_metrics_annually
 
         #"website":profile["website"]

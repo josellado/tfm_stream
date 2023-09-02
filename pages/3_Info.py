@@ -9,10 +9,11 @@ from datetime import datetime
 import yfinance as yf
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-
+import requests
+import json
 # cargamos dotenv
-#from dotenv import load_dotenv
-#load_dotenv()
+from dotenv import load_dotenv
+load_dotenv()
 
 # cargamos las funciones 
 from fundamanetals.finan_model_prep import load_data_fin_model_prep,get_price_data_fig
@@ -26,7 +27,7 @@ from fundamanetals.tablas_fa import get_balance_sheet,\
 # las Api keys del proyecto 
 # import api key for stock data
 FA_API_KEY = os.getenv("financial_model_key")
-print(FA_API_KEY)
+
 
 st.set_page_config(page_title="Analisis Fundamental", layout="wide")
 
@@ -45,13 +46,19 @@ TIME_DIFFS = {
     "5 years": pd.DateOffset(years=5)
 }
 
+# 1 llamada 
+# devuelve el listado de tickers para obtener la info de FMP
+url = os.getenv("LISTA_INFO")
 
-# create 3 columns and add a text_input
-# in the second/center column
-#ticker = st.columns(3)[1].text_input("Ticker")
+payload = {}
+headers = {}
 
+response = requests.request("GET", url, headers=headers, data=payload)
 
-listado_comphias = [" ","AAPL","MSFT","AMZN","NVDA","GOOGL","META","TSLA"]
+listado_comphias=json.loads(response.text)
+listado_comphias.insert(0, " ")
+
+#listado_comphias = [" ","AAPL","MSFT","AMZN","NVDA","GOOGL","META","TSLA"]
 ticker = st.selectbox("Listado de las compañias", listado_comphias)
 
 
@@ -65,14 +72,27 @@ if ticker != " ":
    
     
     # aqui cargamos todo finacial model prep. 
-    # contamos con muchos datos. Investigarlos
+    # contamos con muchos datos.
 
     stock_data = load_data_fin_model_prep(ticker)
 
     info = stock_data["info"]
-    currency = info["currency"]
-    website = info["website"]
-    info_companhia = info["description"]
+    try:
+        currency = info["currency"]
+    except:
+        currency= 'USD'
+
+    try:
+        website = info["website"]
+        info_companhia = info["description"]
+        companyName=info['companyName']
+        symbol=info['symbol']
+
+    except:
+        website = "DATA NO AVAILABLE"
+        info_companhia = "DATA NO AVAILABLE"
+        companyName = "DATA NO AVAILABLE"
+        symbol= "DATA NO AVAILABLE"
 
     # ratios 
 
@@ -84,17 +104,7 @@ if ticker != " ":
     latest_price = close.iloc[-1]
 
     # Title
-    st.title(f"{info['companyName']} ({info['symbol']})")
-
-
-
-    #            YAHOO FINANCE
- 
-    
-    #stock_yf = yf.Ticker("AAPL")
-    #yahoo_info = get_company_info(stock_yf)
-    
-
+    st.title(f"{companyName} ({symbol})")
 
 
     # should all be displayed on the same row
@@ -102,24 +112,24 @@ if ticker != " ":
     today = pd.to_datetime("today").floor("D")
 
     for i, (name, difference) in enumerate(TIME_DIFFS.items()):
-        print(name)
-        print(difference)
+
         # go back to the date <difference> ago
         date = (today - difference)
-        # if there is no data back then, then use the earliest
+
+        # Si no tenemos datos seleccionamos el primero
         if date < close.index[0]:
             date = close.index[0]
 
-        # if no match, get the date closest to it back in time, e.g. weekend to friday
+        #en el caso de que caiga en fin de semana
         closest_date_index = np.abs(close.index - date)
 
         closest_date_index = closest_date_index.argmin()
 
         previous_price = close[closest_date_index]
 
-        # calculate change in percent
+        # calculamos el cambio porcentual
         change = 100*(latest_price - previous_price) / previous_price
-        # show red if negative, green if positive
+        # show red if negativo, green if positivo
         color = "red" if change < 0 else "green"
 
         # color can be displayed as :red[this will be red] in markdown
@@ -136,71 +146,76 @@ if ticker != " ":
     # fundamentals view 
     first_c, second_c, third_c, fourth_c=st.columns(4)
 
-    first_c.metric("Current Ratio", round(key_metrics_annually.loc["currentRatio"][0],2))
-    second_c.metric("ROE", round(key_metrics_annually.loc["roe"][0],2))
-    third_c.metric("PE Ratio", round(key_metrics_annually.loc["peRatio"][0],2))
-    fourth_c.metric("Payout Ratio", round(key_metrics_annually.loc["payoutRatio"][0],2))
+    if len(key_metrics_annually) != 0:
+
+        first_c.metric("Current Ratio", round(key_metrics_annually.loc["currentRatio"][0], 2) if key_metrics_annually.loc["currentRatio"][0] is not None else None)
+        second_c.metric("ROE", round(key_metrics_annually.loc["roe"][0], 2) if key_metrics_annually.loc["roe"][0] is not None else None)
+        third_c.metric("PE Ratio", round(key_metrics_annually.loc["peRatio"][0], 2) if key_metrics_annually.loc["peRatio"][0] is not None else None)
+        fourth_c.metric("Payout Ratio", round(key_metrics_annually.loc["payoutRatio"][0], 2) if key_metrics_annually.loc["payoutRatio"][0] is not None else None)
 
 
-    first_c.metric("Revenue per Share", round(key_metrics_annually.loc["revenuePerShare"][0],2))
-    second_c.metric("Cash per Share", round(key_metrics_annually.loc["cashPerShare"][0],2))
-    third_c.metric("Debt to Equity", round(key_metrics_annually.loc["debtToEquity"][0],2))
-    fourth_c.metric("Debt to Assets", round(key_metrics_annually.loc["debtToAssets"][0],2))
+        first_c.metric("Revenue per Share", round(key_metrics_annually.loc["revenuePerShare"][0], 2) if key_metrics_annually.loc["revenuePerShare"][0] is not None else None)
+        second_c.metric("Cash per Share", round(key_metrics_annually.loc["cashPerShare"][0], 2) if key_metrics_annually.loc["cashPerShare"][0] is not None else None)
+        third_c.metric("Debt to Equity", round(key_metrics_annually.loc["debtToEquity"][0], 2) if key_metrics_annually.loc["debtToEquity"][0] is not None else None)
+        fourth_c.metric("Debt to Assets", round(key_metrics_annually.loc["debtToAssets"][0], 2) if key_metrics_annually.loc["debtToAssets"][0] is not None else None)
+
+    else: 
+
+        first_c.metric("Current Ratio", "Data Not Available")
+        second_c.metric("ROE", "Data Not Available")
+        third_c.metric("PE Ratio", "Data Not Available")
+        fourth_c.metric("Payout Ratio", "Data Not Available")
+
+
+        first_c.metric("Revenue per Share", "Data Not Available")
+        second_c.metric("Cash per Share", "Data Not Available")
+        third_c.metric("Debt to Equity", "Data Not Available")
+        fourth_c.metric("Debt to Assets", "Data Not Available")
 
     st.markdown("---")
     
+
     #-----------------------------------------------------------------------
         
-    # here I set different widths to each column,
-    # meaning the first is 1 width and the second 3,
-    # i.e. 1/(1+3) = 25% and 3 / (1+4) = 75%
+    # establecemos el tamaño de cada columna
+
     overview_columns = st.columns([1, 3])
 
     # first column, basic information
 
-    # The <br/> tag in html simple adds a linebreak.
-    # I add 4 of those to lower the text to become more
-    # vertically aligned
     overview_columns[0].markdown("<br/>"*4, unsafe_allow_html=True)
+
     # text will be displayed and key is the key in info
-    for text, key in [
-        ("Current price", "price"),
-        ("Country", "country"),
-        ("Exchange", "exchange"),
-        ("Sector", "sector"),
-        ("Industry", "industry"),
-        ("Full time employees", "fullTimeEmployees")
-    ]:
-        overview_columns[0].markdown("")
-        overview_columns[0].markdown(f"- {text}: **{info[key]}**")
+    try:
+        for text, key in [
+            ("Current price", "price"),
+            ("Country", "country"),
+            ("Exchange", "exchange"),
+            ("Sector", "sector"),
+            ("Industry", "industry"),
+            ("Full time employees", "fullTimeEmployees")
+        ]:
+            overview_columns[0].markdown("")
+            overview_columns[0].markdown(f"- {text}: **{info[key]}**")
+    except:
+        pass
 
-    # second column, graph and graph settings
+    # second column el grafico
 
-    # empty() functions as a placeholder,
-    # that is, after I later add items to this placeholder,
-    # the items will appear here before elements that are
-    # added later. 
     graph_placeholder = overview_columns[1].empty()
-    # The reason a placeholder is used is because I would like
-    # to show the graph options beneath the graph, but they
-    # need to be set first so that their returned values can
-    # be used when constructing the graph
 
-    # here I add an empty graph to avoid the elements from
-    # jmping around when updating the graph
     graph_placeholder.plotly_chart(go.Figure(), use_container_width=True)
 
     # options that will dictate the graph:
 
-    # radio buttons for what time window to display the stock price
+    # botones para elegir el plazo del grafico
     time_window_key = overview_columns[1].radio("Time window", TIME_DIFFS.keys(), index=len(TIME_DIFFS)-1, horizontal=True)
     # select the value from the key, i.e. the pd.DateOffset
     time_window = TIME_DIFFS[time_window_key]
 
-    # slider to select the moving average to display in the graph
+    # slider para el moving average de 2 a 500, por defecto 30
     moving_average = overview_columns[1].slider("Moving average", min_value=2, max_value=500, value=30)
 
-    # Use above to construct the graph:
 
     # show the graph
     fig = get_price_data_fig(stock_data["stock_closings"], moving_average, time_window, time_window_key, currency)
@@ -209,6 +224,8 @@ if ticker != " ":
 
 
     st.markdown("---")
+
+    # Parte 3 los financial Statements
 
     tab1, tab2, tab3,tab4,tab5 = st.tabs([" ",
                                         "Balance Sheet",
@@ -249,34 +266,33 @@ if ticker != " ":
 
     with tab5:
 
-        #ticker = "MSFT"
-        #st.header(f"DCF Graph- {ticker}")
-        #plot_DCF(ticker,FA_API_KEY)
+        try:
+            dcf =fa.discounted_cash_flow(
+                            ticker,
+                            FA_API_KEY,
+                            period="annualy",
+                    )
 
-        dcf =fa.discounted_cash_flow(
-                        ticker,
-                        FA_API_KEY,
-                        period="annualy",
-                )
+            # create figures for normal and moving average
+            fig1 = px.line(y=list(dcf.iloc[2].values)[::-1],
+                            x=list(dcf.columns.values)[::-1])
+            
+            
+            fig1.update_traces(line_color="blue", name="DCF", showlegend=True)
 
-        # create figures for normal and moving average
-        fig1 = px.line(y=list(dcf.iloc[2].values)[::-1],
-                        x=list(dcf.columns.values)[::-1])
+            # combine and add layout
+            fig = go.Figure(data = fig1.data)
+            fig.update_layout(
+                title=f"DCF Graph- {ticker}",
+                xaxis_title="Fecha",
+                yaxis_title="Discounted Cash Flows",
+                title_x = 0.5,
+                # align labels top-left, side-by-side
+                legend=dict(y=1.1, x=0, orientation="h"),
+                showlegend=True
+            )
+
+            st.plotly_chart(fig)
+        except:
+            st.write("No DATA AVAILABLE")
         
-        
-        fig1.update_traces(line_color="blue", name="DCF", showlegend=True)
-
-        # combine and add layout
-        fig = go.Figure(data = fig1.data)
-        fig.update_layout(
-            title=f"DCF Graph- {ticker}",
-            xaxis_title="Fecha",
-            yaxis_title="Discounted Cash Flows",
-            title_x = 0.5,
-            # align labels top-left, side-by-side
-            legend=dict(y=1.1, x=0, orientation="h"),
-            showlegend=True
-        )
-
-        st.plotly_chart(fig)
-    

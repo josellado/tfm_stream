@@ -1,0 +1,23 @@
+/* metric styling */
+div[data-testid="metric-container"]{
+    border: 1px solid #4c9de1;
+    border-radius: 8px;
+    color: #2d8bda;
+    font-size: 10px;
+    text-align: center;
+    
+   }
+   
+   div.css-50ug3q.e16fv1kl3{
+    font-size: 10px;
+    color: green;
+    
+    
+   }
+   
+   
+   label.css-1xvmym8.e16fv1kl2{
+    color: green;
+    font-size: 10px;
+   
+   }

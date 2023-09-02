@@ -27,12 +27,12 @@ st.markdown("##### How it works:")
 
 st.markdown("""
 
-            The app is divided into 3 pages: 
+            The app is divided into 4 more pages: 
 
-1. __Ranking:__  Find our top selection of stocks and the results of the model :first_place_medal:
-2. __Backtesting:__ Eventough the past does not dictate the future it surely helps to grasp a brief idea of how well we perform
-3. __Info:__  Get real time information on the stocks you are plannig to buy  	:money_with_wings:
-4. __Similarities:__ find the similiar companies to a given stock, very helpufull if you belive an industry is gonna blow.. :boom: :chart_with_upwards_trend:
+1. __Ranking:__  Find our top selection of stocks and the results of the model. :first_place_medal:
+2. __Backtesting:__ Eventough the past does not dictate the future it surely helps to grasp a brief idea of how well we perform.
+3. __Info:__  Get real time information on the stocks you are plannig to buy.  	:money_with_wings:
+4. __Similarities:__ Find similiar companies to a given stock, very helpfull if you belive an industry is gonna blow... :boom: :chart_with_upwards_trend:
 
             
             
